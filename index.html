@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Editable Table with Styling</title>
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+ <link rel="stylesheet " href="style.css">
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const tableData = [
+      { task: "Onboarding Call", columns: ["", "", "", "", "", ""], isEditing: false },
+      { task: "Google Search Console Access", columns: ["", "", "", "", "", ""], isEditing: false },
+      { task: "Google Analytics Access", columns: ["", "", "", "", "", ""], isEditing: false },
+      { task: "Website Access", columns: ["", "", "", "", "", ""], isEditing: false },
+      { task: "Technical Audit", columns: ["", "", "", "", "", ""], isEditing: false },
+      { task: "Anchor Text and Semantic Analysis", columns: ["", "", "", "", "", ""], isEditing: false },
+      { task: "Competitor Analysis", columns: ["", "", "", "", "", ""], isEditing: false },
+      { task: "Anchor Text / URL Mapping", columns: ["", "", "", "", "", ""], isEditing: false },
+      { task: "Google Data Studio Report + Local Reporting Suite", columns: ["", "", "", "", "", ""], isEditing: false },
+      { task: "Site level Optimization", columns: ["", "", "", "", "", ""], isEditing: false },
+      { task: "On Page Optimization", columns: ["", "", "", "", "", ""], isEditing: false },
+      { task: "Content Creation", columns: ["", "", "", "", "", ""], isEditing: false },
+      { task: "Content Publishing", columns: ["", "", "", "", "", ""], isEditing: false },
+      { task: "Premium Press Release", columns: ["", "", "", "", "", ""], isEditing: false },
+      { task: "Authority Niche Placements", columns: ["", "", "", "", "", ""], isEditing: false },
+      { task: "Review Management", columns: ["", "", "", "", "", ""], isEditing: false },
+      { task: "Index Links", columns: ["", "", "", "", "", ""], isEditing: false },
+      { task: "Video Recap", columns: ["", "", "", "", "", ""], isEditing: false }
+    ];
+
+    function EditableTable() {
+      const [data, setData] = React.useState(tableData);
+
+      const toggleEdit = (rowIndex) => {
+        setData(prevData =>
+          prevData.map((row, rIdx) => 
+            rIdx === rowIndex ? { ...row, isEditing: !row.isEditing } : row
+          )
+        );
+      };
+
+      const handleChange = (rowIndex, colIndex, event) => {
+        const value = event.target.value;
+        setData(prevData =>
+          prevData.map((row, rIdx) =>
+            rIdx === rowIndex
+              ? { ...row, columns: row.columns.map((col, cIdx) => (cIdx === colIndex ? value : col)) }
+              : row
+          )
+        );
+      };
+
+      const handleSave = () => {
+        const payload = data.map(row => ({ task: row.task, columns: row.columns }));
+        console.log("Data ready to post:", payload);
+      };
+
+      return (
+        <div className="main">
+          <table>
+            <thead>
+              <tr><h3 >Month</h3>
+                
+                <th>Column 1</th>
+                <th>Column 2</th>
+                <th>Column 3</th>
+                <th>Column 4</th>
+                <th>Column 5</th>
+                <th>Column 6</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.map((row, rowIndex) => (
+                <tr key={rowIndex}>
+                  <td className="task-item">{row.task}</td>
+                  {row.columns.map((col, colIndex) => (
+                    <td key={colIndex}>
+                      {row.isEditing ? (
+                        <input
+                          type="text"
+                          value={col}
+                          onChange={(e) => handleChange(rowIndex, colIndex, e)}
+                        />
+                      ) : (
+                        <span>{col}</span>
+                      )}
+                    </td>
+                  ))}
+                  <td>
+                    <button onClick={() => toggleEdit(rowIndex)}>
+                      {row.isEditing ? "Save" : "Edit"}
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <button className="post-button" onClick={handleSave}>Post Data</button>
+        </div>
+      );
+    }
+
+    // Use createRoot instead of ReactDOM.render
+    const root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(<EditableTable />);
+  </script>
+</body>
+</html>
